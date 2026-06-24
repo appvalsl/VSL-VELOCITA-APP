@@ -3,20 +3,77 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Produzione</title>
+
+<title>Dashboard Produzione</title>
 
 <style>
-body{font-family:Arial;margin:0;background:#f2f5f7}
-.container{padding:10px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.panel{background:white;padding:10px;border-radius:10px}
-h2{margin:0 0 10px 0}
-input{width:100%;padding:14px;font-size:20px;margin-bottom:6px;border-radius:8px;border:1px solid #ccc}
-.big{font-size:34px;font-weight:bold;text-align:center;padding:12px;margin-top:5px;border-radius:8px}
-.green{background:#d4f8db}
-.yellow{background:#fff3cd}
-.red{background:#f8d7da}
-@media(max-width:700px){.grid{grid-template-columns:1fr}}
+body {
+  font-family: Arial;
+  margin:0;
+  background:#eef3f5;
+}
+
+.container {
+  padding:10px;
+}
+
+.grid {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+.panel {
+  background:white;
+  padding:10px;
+  border-radius:10px;
+}
+
+h2 {
+  margin:0 0 10px 0;
+}
+
+/* SEZIONI */
+.section {
+  background:#f7f9fa;
+  padding:10px;
+  border-radius:8px;
+  margin-bottom:8px;
+}
+
+.title {
+  font-size:14px;
+  font-weight:bold;
+  margin-bottom:5px;
+}
+
+/* INPUT */
+input {
+  width:100%;
+  padding:12px;
+  font-size:18px;
+  margin-bottom:5px;
+  border-radius:8px;
+  border:1px solid #ccc;
+}
+
+/* OUTPUT */
+.big {
+  font-size:28px;
+  font-weight:bold;
+  text-align:center;
+  padding:10px;
+  margin-top:5px;
+  border-radius:8px;
+}
+
+.green { background:#d4f8db }
+.yellow { background:#fff3cd }
+.red { background:#f8d7da }
+
+@media(max-width:700px){
+  .grid { grid-template-columns:1fr; }
+}
 </style>
 
 </head>
@@ -31,19 +88,29 @@ input{width:100%;padding:14px;font-size:20px;margin-bottom:6px;border-radius:8px
 <div class="panel">
 <h2>Calzoleria 1</h2>
 
-<input id="v1" type="number" placeholder="Velocità iniziale" value="12.05">
-<input id="m1" type="number" placeholder="Minuti totali" value="470">
+<div class="section">
+<div class="title">INIZIO GIORNATA</div>
+<input id="v1" type="number" placeholder="Velocità" value="12.05">
+<input id="m1" type="number" placeholder="Minuti" value="470">
 <input id="p1" type="number" placeholder="Paia/carrello" value="6">
+<div class="big green" id="proj1"></div>
+</div>
 
+<div class="section">
+<div class="title">FERMI</div>
+<input id="f1" type="number" placeholder="Minuti fermi" value="20">
+<div class="big yellow" id="velPost1"></div>
+</div>
+
+<div class="section">
+<div class="title">LIVE</div>
 <input id="t1" type="number" placeholder="Minuti trascorsi" value="220">
-<input id="f1" type="number" placeholder="Fermi" value="20">
-
 <input id="pr1" type="number" placeholder="Prodotto" value="250">
 <input id="o1" type="number" placeholder="Obiettivo" value="530">
 
-<div class="big green" id="proj1"></div>
-<div class="big yellow" id="vel1"></div>
 <div class="big red" id="da1"></div>
+<div class="big yellow" id="vel1"></div>
+</div>
 
 </div>
 
@@ -51,19 +118,29 @@ input{width:100%;padding:14px;font-size:20px;margin-bottom:6px;border-radius:8px
 <div class="panel">
 <h2>Calzoleria 2</h2>
 
+<div class="section">
+<div class="title">INIZIO GIORNATA</div>
 <input id="v2" type="number" value="12.05">
 <input id="m2" type="number" value="470">
 <input id="p2" type="number" value="6">
+<div class="big green" id="proj2"></div>
+</div>
 
-<input id="t2" type="number" value="220">
+<div class="section">
+<div class="title">FERMI</div>
 <input id="f2" type="number" value="20">
+<div class="big yellow" id="velPost2"></div>
+</div>
 
+<div class="section">
+<div class="title">LIVE</div>
+<input id="t2" type="number" value="220">
 <input id="pr2" type="number" value="250">
 <input id="o2" type="number" value="530">
 
-<div class="big green" id="proj2"></div>
-<div class="big yellow" id="vel2"></div>
 <div class="big red" id="da2"></div>
+<div class="big yellow" id="vel2"></div>
+</div>
 
 </div>
 
@@ -71,43 +148,52 @@ input{width:100%;padding:14px;font-size:20px;margin-bottom:6px;border-radius:8px
 </div>
 
 <script>
+
 function calc(id){
 
 let v=+document.getElementById("v"+id).value||0;
 let m=+document.getElementById("m"+id).value||0;
 let p=+document.getElementById("p"+id).value||1;
 
-let t=+document.getElementById("t"+id).value||0;
 let f=+document.getElementById("f"+id).value||0;
 
+let t=+document.getElementById("t"+id).value||0;
 let pr=+document.getElementById("pr"+id).value||0;
 let o=+document.getElementById("o"+id).value||0;
 
-// PROIEZIONE
+/* PROIEZIONE */
 let proj=v*(m/60)*p;
 
-// DA PRODURRE
-let da=o-pr;
-
-// MINUTI RESIDUI
-let minRes=m-t-f;
-
-// VELOCITA NECESSARIA
-let vel=0;
-if(minRes>0){
-vel=da/((minRes/60)*p);
+/* FERMI → velocità aggiornamento */
+let minEff=m-f;
+let velPost=0;
+if(minEff>0){
+  velPost=proj/((minEff/60)*p);
 }
 
+/* LIVE */
+let da=o-pr;
+let minResidui=m-t-f;
+
+let velNec=0;
+if(minResidui>0){
+  velNec=da/((minResidui/60)*p);
+}
+
+/* OUTPUT */
 document.getElementById("proj"+id).innerText="Proiezione: "+proj.toFixed(0);
-document.getElementById("vel"+id).innerText="Vel necessaria: "+vel.toFixed(2);
-document.getElementById("da"+id).innerText="Mancano: "+da;
+document.getElementById("velPost"+id).innerText="Vel dopo fermi: "+velPost.toFixed(2);
+document.getElementById("da"+id).innerText="Da produrre: "+da;
+document.getElementById("vel"+id).innerText="Vel necessaria: "+velNec.toFixed(2);
+
 }
 
 document.querySelectorAll("input").forEach(i=>{
-i.addEventListener("input",()=>{calc(1);calc(2)})
-});
+  i.addEventListener("input",()=>{calc(1);calc(2)})
+})
 
 calc(1);calc(2);
+
 </script>
 
 </body>
