@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Produzione</title>
+<style>
+body{font-family:Arial;margin:0;background:#f2f5f7}
+.container{padding:10px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.panel{background:white;padding:10px;border-radius:10px}
+h2{margin:0 0 10px 0}
+input{width:100%;padding:14px;font-size:20px;margin-bottom:6px;border-radius:8px;border:1px solid #ccc}
+.big{font-size:34px;font-weight:bold;text-align:center;padding:12px;margin-top:5px;border-radius:8px}
+.green{background:#d4f8db}
+.yellow{background:#fff3cd}
+.red{background:#f8d7da}
+@media(max-width:700px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="grid">
+
+<div class="panel">
+<h2>Calzoleria 1</h2>
+<input id="v1" type="number" value="12.05">
+<input id="m1" type="number" value="470">
+<input id="p1" type="number" value="6">
+<input id="f1" type="number" value="20">
+<input id="pr1" type="number" value="250">
+<input id="o1" type="number" value="530">
+<div class="big green" id="proj1"></div>
+<div class="big yellow" id="vel1"></div>
+<div class="big red" id="da1"></div>
+</div>
+
+<div class="panel">
+<h2>Calzoleria 2</h2>
+<input id="v2" type="number" value="12.05">
+<input id="m2" type="number" value="470">
+<input id="p2" type="number" value="6">
+<input id="f2" type="number" value="20">
+<input id="pr2" type="number" value="250">
+<input id="o2" type="number" value="530">
+<div class="big green" id="proj2"></div>
+<div class="big yellow" id="vel2"></div>
+<div class="big red" id="da2"></div>
+</div>
+
+</div>
+</div>
+
+<script>
+function calc(id){
+let v=+document.getElementById("v"+id).value||0;
+let m=+document.getElementById("m"+id).value||0;
+let p=+document.getElementById("p"+id).value||1;
+let f=+document.getElementById("f"+id).value||0;
+let pr=+document.getElementById("pr"+id).value||0;
+let o=+document.getElementById("o"+id).value||0;
+let proj=v*(m/60)*p;
+let da=o-pr;
+let vel=da/((m-f)/60*p);
+document.getElementById("proj"+id).innerText="Proiezione: "+proj.toFixed(0);
+document.getElementById("vel"+id).innerText="Vel: "+vel.toFixed(2);
+document.getElementById("da"+id).innerText="Mancano: "+da;
+}
+document.querySelectorAll("input").forEach(i=>i.addEventListener("input",()=>{calc(1);calc(2)}));
+calc(1);calc(2);
+</script>
+</body>
+</html>
