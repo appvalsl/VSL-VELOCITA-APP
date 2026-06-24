@@ -4,196 +4,945 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Dashboard Produzione</title>
+<title>Dashboard Produzione Calzolerie</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <style>
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --bg: #eef3f5;
+  --card: #ffffff;
+  --text: #0f172a;
+  --muted: #64748b;
+  --border: #d7e1e8;
+  --primary: #197f7c;
+  --primary-light: #e8f6f5;
+  --blue: #2563eb;
+  --green: #16a34a;
+  --yellow: #f59e0b;
+  --red: #dc2626;
+  --soft-green: #dcfce7;
+  --soft-yellow: #fef3c7;
+  --soft-red: #fee2e2;
+  --soft-blue: #dbeafe;
+  --shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+}
+
 body {
-  font-family: Arial;
-  margin:0;
-  background:#eef3f5;
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--text);
 }
 
-.container {
-  padding:10px;
+.app {
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 14px;
 }
 
-.grid {
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
+/* HEADER */
+.header {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 18px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow);
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+}
+
+.header-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-weight: 800;
+  color: var(--primary);
+  margin-bottom: 4px;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 32px;
+  line-height: 1.1;
+}
+
+.header p {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.4;
+  max-width: 900px;
+}
+
+.header-badge {
+  min-width: 120px;
+  background: linear-gradient(135deg, var(--primary), #33aaa3);
+  color: white;
+  border-radius: 16px;
+  padding: 12px;
+  text-align: center;
+  font-weight: 800;
+}
+
+.header-badge small {
+  display: block;
+  font-size: 11px;
+  opacity: 0.85;
+}
+
+.header-badge strong {
+  display: block;
+  margin-top: 4px;
+  font-size: 18px;
+}
+
+/* LAYOUT */
+.panels {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
 }
 
 .panel {
-  background:white;
-  padding:10px;
-  border-radius:10px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
 }
 
-h2 {
-  margin:0 0 10px 0;
+.panel-head {
+  padding: 16px;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-/* SEZIONI */
+.panel-head.c1 {
+  background: linear-gradient(135deg, #197f7c, #38b2ac);
+}
+
+.panel-head.c2 {
+  background: linear-gradient(135deg, #243b7a, #4f79c7);
+}
+
+.panel-head small {
+  display: block;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 11px;
+  font-weight: 800;
+  opacity: 0.85;
+}
+
+.panel-head h2 {
+  margin: 4px 0 0;
+  font-size: 25px;
+}
+
+.status {
+  border: 1px solid rgba(255,255,255,0.4);
+  background: rgba(255,255,255,0.18);
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.panel-body {
+  padding: 12px;
+}
+
+/* SECTIONS */
 .section {
-  background:#f7f9fa;
-  padding:10px;
-  border-radius:8px;
-  margin-bottom:8px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 12px;
+  margin-bottom: 12px;
+  background: #fbfdfe;
 }
 
-.title {
-  font-size:14px;
-  font-weight:bold;
-  margin-bottom:5px;
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  text-transform: uppercase;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
 }
 
-/* INPUT */
-input {
-  width:100%;
-  padding:12px;
-  font-size:18px;
-  margin-bottom:5px;
-  border-radius:8px;
-  border:1px solid #ccc;
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
 }
 
-/* OUTPUT */
-.big {
-  font-size:28px;
-  font-weight:bold;
-  text-align:center;
-  padding:10px;
-  margin-top:5px;
-  border-radius:8px;
+.dot-blue { background: var(--blue); }
+.dot-green { background: var(--green); }
+.dot-yellow { background: var(--yellow); }
+
+.fields {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
 }
 
-.green { background:#d4f8db }
-.yellow { background:#fff3cd }
-.red { background:#f8d7da }
+.fields.live {
+  grid-template-columns: repeat(3, 1fr);
+}
 
-@media(max-width:700px){
-  .grid { grid-template-columns:1fr; }
+.fields.two {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.field,
+.output {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 13px;
+  padding: 10px;
+  min-width: 0;
+}
+
+.field label,
+.output span {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+  margin-bottom: 6px;
+}
+
+.field input {
+  width: 100%;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  padding: 10px;
+  font-size: 18px;
+  font-weight: 800;
+  outline: none;
+  background: #f8fafc;
+}
+
+.field input:focus {
+  border-color: var(--primary);
+  background: white;
+  box-shadow: 0 0 0 3px rgba(25,127,124,0.14);
+}
+
+.field small,
+.output small {
+  display: block;
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.output strong {
+  display: block;
+  font-size: 26px;
+  line-height: 1;
+  margin-top: 3px;
+}
+
+.output-blue {
+  background: var(--soft-blue);
+  border-color: #bfdbfe;
+}
+
+.output-green {
+  background: var(--soft-green);
+  border-color: #bbf7d0;
+}
+
+.output-yellow {
+  background: var(--soft-yellow);
+  border-color: #fde68a;
+}
+
+.output-red {
+  background: var(--soft-red);
+  border-color: #fecaca;
+}
+
+/* DESCRIPTION */
+.description {
+  margin-top: 10px;
+  background: #f1f5f9;
+  border-left: 5px solid var(--primary);
+  border-radius: 10px;
+  padding: 10px 12px;
+  color: #334155;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.description strong {
+  color: var(--primary);
+}
+
+/* RESULT SUMMARY */
+.result-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.big-result {
+  border-radius: 14px;
+  padding: 14px 10px;
+  text-align: center;
+  border: 1px solid var(--border);
+}
+
+.big-result span {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 800;
+  text-transform: uppercase;
+  margin-bottom: 7px;
+}
+
+.big-result strong {
+  display: block;
+  font-size: 30px;
+  line-height: 1;
+}
+
+.big-result small {
+  display: block;
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 5px;
+}
+
+/* ACTIONS */
+.actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 0 12px 12px;
+}
+
+button {
+  border: 0;
+  border-radius: 12px;
+  padding: 12px 16px;
+  font-weight: 900;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.btn-reset {
+  background: #f1f5f9;
+  color: #334155;
+}
+
+.btn-export {
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+/* EXPORT */
+.export-box {
+  margin-top: 14px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 16px;
+  box-shadow: var(--shadow);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.export-box h3 {
+  margin: 0 0 4px;
+  color: var(--primary);
+  font-size: 22px;
+}
+
+.export-box p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.export-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.btn-main {
+  background: var(--primary);
+  color: white;
+}
+
+.btn-share {
+  background: #fbbf24;
+  color: #111827;
+}
+
+/* MOBILE */
+@media (max-width: 1050px) {
+  .panels {
+    grid-template-columns: 1fr;
+  }
+
+  .fields,
+  .fields.live {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 700px) {
+  .app {
+    padding: 10px;
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .header h1 {
+    font-size: 26px;
+  }
+
+  .header-badge {
+    width: 100%;
+  }
+
+  .fields,
+  .fields.live,
+  .fields.two,
+  .result-row {
+    grid-template-columns: 1fr;
+  }
+
+  .panel-head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .status {
+    width: 100%;
+    text-align: center;
+  }
+
+  .export-box {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .export-buttons {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  button {
+    width: 100%;
+  }
 }
 </style>
-
 </head>
 
 <body>
 
-<div class="container">
+<div class="app">
 
-<div class="grid">
+  <div class="header">
+    <div>
+      <div class="header-label">Controllo produzione manovia</div>
+      <h1>Dashboard Calzolerie</h1>
+      <p>
+        Strumento per controllare in modo semplice la produzione giornaliera delle due calzolerie.
+        Inserisci i dati reali durante la giornata e leggi subito proiezione, impatto dei fermi,
+        paia mancanti e velocità necessaria per raggiungere l'obiettivo.
+      </p>
+    </div>
 
-<!-- CALZOLERIA 1 -->
-<div class="panel">
-<h2>Calzoleria 1</h2>
+    <div class="header-badge">
+      <small>Linee attive</small>
+      <strong>2 pannelli</strong>
+    </div>
+  </div>
 
-<div class="section">
-<div class="title">INIZIO GIORNATA</div>
-<input id="v1" type="number" placeholder="Velocità" value="12.05">
-<input id="m1" type="number" placeholder="Minuti" value="470">
-<input id="p1" type="number" placeholder="Paia/carrello" value="6">
-<div class="big green" id="proj1"></div>
-</div>
+  <div id="dashboardArea" class="panels">
 
-<div class="section">
-<div class="title">FERMI</div>
-<input id="f1" type="number" placeholder="Minuti fermi" value="20">
-<div class="big yellow" id="velPost1"></div>
-</div>
+    <!-- CALZOLERIA 1 -->
+    <div class="panel" id="panel1">
+      <div class="panel-head c1">
+        <div>
+          <small>Linea produttiva</small>
+          <h2>Calzoleria 1</h2>
+        </div>
+        <div class="status" id="status1">In calcolo</div>
+      </div>
 
-<div class="section">
-<div class="title">LIVE</div>
-<input id="t1" type="number" placeholder="Minuti trascorsi" value="220">
-<input id="pr1" type="number" placeholder="Prodotto" value="250">
-<input id="o1" type="number" placeholder="Obiettivo" value="530">
+      <div class="panel-body">
 
-<div class="big red" id="da1"></div>
-<div class="big yellow" id="vel1"></div>
-</div>
+        <div class="section">
+          <div class="section-title"><span class="dot dot-blue"></span>Inizio giornata</div>
 
-</div>
+          <div class="fields">
+            <div class="field">
+              <label>Velocità iniziale</label>
+              <input id="vel1" type="text" value="12,05">
+              <small>carrelli/ora</small>
+            </div>
 
-<!-- CALZOLERIA 2 -->
-<div class="panel">
-<h2>Calzoleria 2</h2>
+            <div class="field">
+              <label>Minuti lavoro</label>
+              <input id="min1" type="text" value="470">
+              <small>minuti totali</small>
+            </div>
 
-<div class="section">
-<div class="title">INIZIO GIORNATA</div>
-<input id="v2" type="number" value="12.05">
-<input id="m2" type="number" value="470">
-<input id="p2" type="number" value="6">
-<div class="big green" id="proj2"></div>
-</div>
+            <div class="field">
+              <label>Paia/carrello</label>
+              <input id="paia1" type="text" value="6">
+              <small>paia per carrello</small>
+            </div>
 
-<div class="section">
-<div class="title">FERMI</div>
-<input id="f2" type="number" value="20">
-<div class="big yellow" id="velPost2"></div>
-</div>
+            <div class="output output-blue">
+              <span>Proiezione iniziale</span>
+              <strong id="proj1">0</strong>
+              <small>paia previste</small>
+            </div>
+          </div>
 
-<div class="section">
-<div class="title">LIVE</div>
-<input id="t2" type="number" value="220">
-<input id="pr2" type="number" value="250">
-<input id="o2" type="number" value="530">
+          <div class="description">
+            <strong>A cosa serve:</strong> questa sezione fotografa la partenza della giornata.
+            Se la velocità iniziale resta costante per tutti i minuti disponibili, il sistema stima quante paia verranno prodotte a fine turno.
+          </div>
+        </div>
 
-<div class="big red" id="da2"></div>
-<div class="big yellow" id="vel2"></div>
-</div>
+        <div class="section">
+          <div class="section-title"><span class="dot dot-green"></span>Fermi manovia</div>
 
-</div>
+          <div class="fields two">
+            <div class="field">
+              <label>Minuti di fermo</label>
+              <input id="fermi1" type="text" value="20">
+              <small>tempo perso</small>
+            </div>
 
-</div>
+            <div class="output output-green">
+              <span>Velocità dopo fermi</span>
+              <strong id="velPost1">0</strong>
+              <small>carrelli/ora</small>
+            </div>
+          </div>
+
+          <div class="description">
+            <strong>A cosa serve:</strong> inserendo i minuti di fermo, il sistema calcola quale velocità bisognerebbe tenere
+            per recuperare il tempo perso e mantenere la proiezione iniziale della giornata.
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title"><span class="dot dot-yellow"></span>Aggiornamento live</div>
+
+          <div class="fields live">
+            <div class="field">
+              <label>Obiettivo</label>
+              <input id="obj1" type="text" value="530">
+              <small>paia da fare</small>
+            </div>
+
+            <div class="field">
+              <label>Prodotto attuale</label>
+              <input id="prod1" type="text" value="250">
+              <small>paia già fatte</small>
+            </div>
+
+            <div class="field">
+              <label>Minuti trascorsi</label>
+              <input id="trasc1" type="text" value="220">
+              <small>minuti già passati</small>
+            </div>
+          </div>
+
+          <div class="result-row">
+            <div class="big-result output-red">
+              <span>Da produrre</span>
+              <strong id="mancano1">0</strong>
+              <small>paia mancanti</small>
+            </div>
+
+            <div class="big-result output-blue">
+              <span>Minuti residui</span>
+              <strong id="residui1">0</strong>
+              <small>minuti utili</small>
+            </div>
+
+            <div class="big-result output-yellow">
+              <span>Velocità necessaria</span>
+              <strong id="velNec1">0</strong>
+              <small>carrelli/ora</small>
+            </div>
+          </div>
+
+          <div class="description">
+            <strong>A cosa serve:</strong> questa è la parte più importante durante la giornata.
+            Confronta l'obiettivo con quanto è già stato prodotto, considera i minuti trascorsi e i fermi,
+            poi indica quante paia mancano, quanto tempo utile resta e quale velocità serve da ora a fine turno.
+          </div>
+        </div>
+
+      </div>
+
+      <div class="actions">
+        <button class="btn-reset" onclick="resetPanel(1)">Reset C1</button>
+        <button class="btn-export" onclick="exportElement('panel1','calzoleria-1.png')">Esporta C1</button>
+      </div>
+    </div>
+
+    <!-- CALZOLERIA 2 -->
+    <div class="panel" id="panel2">
+      <div class="panel-head c2">
+        <div>
+          <small>Linea produttiva</small>
+          <h2>Calzoleria 2</h2>
+        </div>
+        <div class="status" id="status2">In calcolo</div>
+      </div>
+
+      <div class="panel-body">
+
+        <div class="section">
+          <div class="section-title"><span class="dot dot-blue"></span>Inizio giornata</div>
+
+          <div class="fields">
+            <div class="field">
+              <label>Velocità iniziale</label>
+              <input id="vel2" type="text" value="12,05">
+              <small>carrelli/ora</small>
+            </div>
+
+            <div class="field">
+              <label>Minuti lavoro</label>
+              <input id="min2" type="text" value="470">
+              <small>minuti totali</small>
+            </div>
+
+            <div class="field">
+              <label>Paia/carrello</label>
+              <input id="paia2" type="text" value="6">
+              <small>paia per carrello</small>
+            </div>
+
+            <div class="output output-blue">
+              <span>Proiezione iniziale</span>
+              <strong id="proj2">0</strong>
+              <small>paia previste</small>
+            </div>
+          </div>
+
+          <div class="description">
+            <strong>A cosa serve:</strong> questa sezione fotografa la partenza della giornata.
+            Se la velocità iniziale resta costante per tutti i minuti disponibili, il sistema stima quante paia verranno prodotte a fine turno.
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title"><span class="dot dot-green"></span>Fermi manovia</div>
+
+          <div class="fields two">
+            <div class="field">
+              <label>Minuti di fermo</label>
+              <input id="fermi2" type="text" value="20">
+              <small>tempo perso</small>
+            </div>
+
+            <div class="output output-green">
+              <span>Velocità dopo fermi</span>
+              <strong id="velPost2">0</strong>
+              <small>carrelli/ora</small>
+            </div>
+          </div>
+
+          <div class="description">
+            <strong>A cosa serve:</strong> inserendo i minuti di fermo, il sistema calcola quale velocità bisognerebbe tenere
+            per recuperare il tempo perso e mantenere la proiezione iniziale della giornata.
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title"><span class="dot dot-yellow"></span>Aggiornamento live</div>
+
+          <div class="fields live">
+            <div class="field">
+              <label>Obiettivo</label>
+              <input id="obj2" type="text" value="530">
+              <small>paia da fare</small>
+            </div>
+
+            <div class="field">
+              <label>Prodotto attuale</label>
+              <input id="prod2" type="text" value="250">
+              <small>paia già fatte</small>
+            </div>
+
+            <div class="field">
+              <label>Minuti trascorsi</label>
+              <input id="trasc2" type="text" value="220">
+              <small>minuti già passati</small>
+            </div>
+          </div>
+
+          <div class="result-row">
+            <div class="big-result output-red">
+              <span>Da produrre</span>
+              <strong id="mancano2">0</strong>
+              <small>paia mancanti</small>
+            </div>
+
+            <div class="big-result output-blue">
+              <span>Minuti residui</span>
+              <strong id="residui2">0</strong>
+              <small>minuti utili</small>
+            </div>
+
+            <div class="big-result output-yellow">
+              <span>Velocità necessaria</span>
+              <strong id="velNec2">0</strong>
+              <small>carrelli/ora</small>
+            </div>
+          </div>
+
+          <div class="description">
+            <strong>A cosa serve:</strong> questa è la parte più importante durante la giornata.
+            Confronta l'obiettivo con quanto è già stato prodotto, considera i minuti trascorsi e i fermi,
+            poi indica quante paia mancano, quanto tempo utile resta e quale velocità serve da ora a fine turno.
+          </div>
+        </div>
+
+      </div>
+
+      <div class="actions">
+        <button class="btn-reset" onclick="resetPanel(2)">Reset C2</button>
+        <button class="btn-export" onclick="exportElement('panel2','calzoleria-2.png')">Esporta C2</button>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="export-box">
+    <div>
+      <h3>Esporta dashboard</h3>
+      <p>Scarica una fotografia della dashboard completa o condividila dal dispositivo.</p>
+    </div>
+
+    <div class="export-buttons">
+      <button class="btn-main" onclick="exportElement('dashboardArea','dashboard-calzolerie.png')">Scarica dashboard</button>
+      <button class="btn-share" onclick="shareDashboard()">Condividi / invia</button>
+    </div>
+  </div>
+
 </div>
 
 <script>
+const defaultValues = {
+  vel: "12,05",
+  min: "470",
+  paia: "6",
+  fermi: "20",
+  obj: "530",
+  prod: "250",
+  trasc: "220"
+};
 
-function calc(id){
-
-let v=+document.getElementById("v"+id).value||0;
-let m=+document.getElementById("m"+id).value||0;
-let p=+document.getElementById("p"+id).value||1;
-
-let f=+document.getElementById("f"+id).value||0;
-
-let t=+document.getElementById("t"+id).value||0;
-let pr=+document.getElementById("pr"+id).value||0;
-let o=+document.getElementById("o"+id).value||0;
-
-/* PROIEZIONE */
-let proj=v*(m/60)*p;
-
-/* FERMI → velocità aggiornamento */
-let minEff=m-f;
-let velPost=0;
-if(minEff>0){
-  velPost=proj/((minEff/60)*p);
+function leggi(id) {
+  const el = document.getElementById(id);
+  if (!el) return 0;
+  return parseFloat(String(el.value).replace(",", ".")) || 0;
 }
 
-/* LIVE */
-let da=o-pr;
-let minResidui=m-t-f;
-
-let velNec=0;
-if(minResidui>0){
-  velNec=da/((minResidui/60)*p);
+function formatta(valore, decimali) {
+  if (!isFinite(valore)) return "0";
+  return valore.toFixed(decimali).replace(".", ",");
 }
 
-/* OUTPUT */
-document.getElementById("proj"+id).innerText="Proiezione: "+proj.toFixed(0);
-document.getElementById("velPost"+id).innerText="Vel dopo fermi: "+velPost.toFixed(2);
-document.getElementById("da"+id).innerText="Da produrre: "+da;
-document.getElementById("vel"+id).innerText="Vel necessaria: "+velNec.toFixed(2);
-
+function setText(id, value, decimali) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.innerText = formatta(value, decimali);
 }
 
-document.querySelectorAll("input").forEach(i=>{
-  i.addEventListener("input",()=>{calc(1);calc(2)})
-})
+function calcola(id) {
+  const vel = leggi("vel" + id);
+  const min = leggi("min" + id);
+  const paia = leggi("paia" + id) || 1;
+  const fermi = leggi("fermi" + id);
+  const obj = leggi("obj" + id);
+  const prod = leggi("prod" + id);
+  const trasc = leggi("trasc" + id);
 
-calc(1);calc(2);
+  const oreTotali = min / 60;
+  const proiezione = vel * oreTotali * paia;
 
+  const minutiEffettivi = min - fermi;
+  const oreEffettive = minutiEffettivi / 60;
+
+  let velocitaPostFermi = 0;
+  if (oreEffettive > 0 && paia > 0) {
+    velocitaPostFermi = proiezione / (oreEffettive * paia);
+  }
+
+  const daProdurre = obj - prod;
+  const minutiResidui = min - trasc - fermi;
+  const oreResidue = minutiResidui / 60;
+
+  let velocitaNecessaria = 0;
+  if (oreResidue > 0 && paia > 0) {
+    velocitaNecessaria = daProdurre / (oreResidue * paia);
+  }
+
+  setText("proj" + id, proiezione, 1);
+  setText("velPost" + id, velocitaPostFermi, 2);
+  setText("mancano" + id, daProdurre, 0);
+  setText("residui" + id, minutiResidui, 0);
+  setText("velNec" + id, velocitaNecessaria, 2);
+
+  aggiornaStato(id, vel, velocitaNecessaria, daProdurre, minutiResidui);
+}
+
+function aggiornaStato(id, velocitaIniziale, velocitaNecessaria, daProdurre, minutiResidui) {
+  const status = document.getElementById("status" + id);
+
+  if (daProdurre <= 0) {
+    status.innerText = "Obiettivo raggiunto";
+    return;
+  }
+
+  if (minutiResidui <= 0) {
+    status.innerText = "Tempo finito";
+    return;
+  }
+
+  if (velocitaNecessaria <= velocitaIniziale) {
+    status.innerText = "In linea";
+  } else if (velocitaNecessaria <= velocitaIniziale * 1.15) {
+    status.innerText = "Da monitorare";
+  } else {
+    status.innerText = "Recupero alto";
+  }
+}
+
+function calcolaTutto() {
+  calcola(1);
+  calcola(2);
+}
+
+function resetPanel(id) {
+  document.getElementById("vel" + id).value = defaultValues.vel;
+  document.getElementById("min" + id).value = defaultValues.min;
+  document.getElementById("paia" + id).value = defaultValues.paia;
+  document.getElementById("fermi" + id).value = defaultValues.fermi;
+  document.getElementById("obj" + id).value = defaultValues.obj;
+  document.getElementById("prod" + id).value = defaultValues.prod;
+  document.getElementById("trasc" + id).value = defaultValues.trasc;
+  calcolaTutto();
+}
+
+document.querySelectorAll("input").forEach(input => {
+  input.addEventListener("input", calcolaTutto);
+});
+
+calcolaTutto();
+
+async function exportElement(elementId, fileName) {
+  const element = document.getElementById(elementId);
+
+  if (!element) {
+    alert("Elemento non trovato.");
+    return;
+  }
+
+  if (typeof html2canvas === "undefined") {
+    alert("Esportazione non disponibile: manca la libreria html2canvas.");
+    return;
+  }
+
+  const canvas = await html2canvas(element, {
+    scale: 2,
+    backgroundColor: "#eef3f5",
+    useCORS: true
+  });
+
+  canvas.toBlob(blob => {
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+  }, "image/png");
+}
+
+async function shareDashboard() {
+  if (typeof html2canvas === "undefined") {
+    alert("Condivisione non disponibile: manca la libreria html2canvas.");
+    return;
+  }
+
+  const element = document.getElementById("dashboardArea");
+
+  const canvas = await html2canvas(element, {
+    scale: 2,
+    backgroundColor: "#eef3f5",
+    useCORS: true
+  });
+
+  canvas.toBlob(async blob => {
+    const file = new File([blob], "dashboard-calzolerie.png", {
+      type: "image/png"
+    });
+
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      await navigator.share({
+        title: "Dashboard Calzolerie",
+        text: "Dashboard produzione aggiornata.",
+        files: [file]
+      });
+    } else {
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "dashboard-calzolerie.png";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+
+      const subject = encodeURIComponent("Dashboard produzione calzolerie");
+      const body = encodeURIComponent(
+        "Ciao,\n\nho scaricato la dashboard produzione aggiornata.\n\nSe l'allegato non viene inserito automaticamente, allegare manualmente il file dashboard-calzolerie.png appena scaricato."
+      );
+
+      window.location.href = "mailto:?subject=" + subject + "&body=" + body;
+    }
+  }, "image/png");
+}
 </script>
 
 </body>
